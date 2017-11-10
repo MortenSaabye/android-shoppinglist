@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:id="@+id/rowLayout">
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_width="0dp"
+        android:layout_weight="0.6"
+        android:gravity="center_vertical"
+        android:textSize="10pt"
+        android:layout_height="50dp" />
+    <Button
+        android:id="@+id/deleteBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="Delete"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:id="@+id/checkBox"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
