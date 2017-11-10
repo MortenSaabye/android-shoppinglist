@@ -18,7 +18,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<String> bag;
+    private ArrayList<Product> bag;
     private ItemAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if(savedInstanceState != null) {
-            bag = savedInstanceState.getStringArrayList("list");
+            bag = savedInstanceState.getParcelableArrayList("list");
         } else {
             bag = new ArrayList<>();
         }
@@ -50,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newItem = newItemField.getText().toString();
-                String quantity = quantityField.getText().toString();
-                bag.add(newItem + " " + quantity);
+                Integer quantity = new Integer(quantityField.getText().toString());
+                Product product = new Product(newItem, quantity.intValue());
+                bag.add(product);
                 newItemField.setText("");
                 quantityField.setText("");
                 //The next line is needed in order to say to the ListView
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList("list", bag);
+        outState.putParcelableArrayList("list", bag);
     }
 
     public void clearItems() {

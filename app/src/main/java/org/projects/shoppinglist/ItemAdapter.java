@@ -18,14 +18,14 @@ import java.util.ArrayList;
  * Created by MortenSaabye on 22/09/2017.
  */
 
-public class ItemAdapter extends ArrayAdapter<String> {
-    private ArrayList<String> shoppingList;
+public class ItemAdapter extends ArrayAdapter<Product> {
+    private ArrayList<Product> shoppingList;
     private ArrayList<Integer> selectedItems = new ArrayList<>();
 
     public ArrayList<Integer> getSelectedItems() {
         return selectedItems;
     }
-    public ItemAdapter(@NonNull Context context, ArrayList<String> shoppingList) {
+    public ItemAdapter(@NonNull Context context, ArrayList<Product> shoppingList) {
         super(context, 0,  shoppingList);
         this.shoppingList = shoppingList;
     }
@@ -33,14 +33,14 @@ public class ItemAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        final String item = getItem(position);
+        final Product item = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(this.getContext()).inflate(R.layout.shopping_item, parent, false);
         }
 
         TextView itemName = (TextView) convertView.findViewById(R.id.itemName);
-        itemName.setText(item);
+        itemName.setText(item.toString());
 
         Button deleteBtn = (Button) convertView.findViewById(R.id.deleteBtn);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
