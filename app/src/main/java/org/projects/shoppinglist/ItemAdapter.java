@@ -1,9 +1,8 @@
 package org.projects.shoppinglist;
 
+
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by MortenSaabye on 22/09/2017.
@@ -20,14 +24,27 @@ import java.util.ArrayList;
 
 public class ItemAdapter extends ArrayAdapter<Product> {
     private ArrayList<Product> shoppingList;
-    private ArrayList<Integer> selectedItems = new ArrayList<>();
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("products");
 
-    public ArrayList<Integer> getSelectedItems() {
-        return selectedItems;
+    private Context context;
+    private Map<Integer,CheckBox> checkBoxes = new HashMap<>();
+    public Map<Integer,CheckBox> getSelectedBoxes() {
+        return checkBoxes;
     }
+    public void clearSelectedItems(){
+        for(Map.Entry<Integer,CheckBox> box :checkBoxes.entrySet()) {
+            box.getValue().setChecked(false);
+        }
+        checkBoxes.clear();
+    }
+    public Context getContext() {
+        return context;
+    }
+
     public ItemAdapter(@NonNull Context context, ArrayList<Product> shoppingList) {
         super(context, 0,  shoppingList);
         this.shoppingList = shoppingList;
+        this.context = context;
     }
 
     @Override
@@ -43,32 +60,29 @@ public class ItemAdapter extends ArrayAdapter<Product> {
         itemName.setText(item.toString());
 
         Button deleteBtn = (Button) convertView.findViewById(R.id.deleteBtn);
+        final ItemAdapter adapter = this;
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shoppingList.remove(shoppingList.get(position));
-                notifyDataSetChanged();
+                String id = shoppingList.get(position).getUid();
+                mDatabase.child(id).removeValue();
+                adapter.clearSelectedItems();
             }
         });
 
-        CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-
+        final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Integer selectedInteger = new Integer(position);
-                if (selectedItems.contains(selectedInteger)) {
-                    selectedItems.remove(position);
+                shoppingList.get(position);
+                if (checkBoxes.get(position) != null) {
+                    checkBoxes.remove(position);
                 } else {
-                    selectedItems.add(position);
+                    checkBoxes.put(position, checkBox);
                 }
-                Log.d("select", "" + position);
-
             }
         });
 
-
         return convertView;
     }
-
 }

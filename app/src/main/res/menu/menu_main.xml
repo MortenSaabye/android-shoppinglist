@@ -10,9 +10,15 @@
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_clear_all"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="Clear all"
         android:icon="@drawable/action_clear_all"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/action_log_out"
+        android:orderInCategory="1"
+        android:title="Log Out"
         app:showAsAction="always"
         />
 </menu>

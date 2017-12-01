@@ -7,6 +7,15 @@ public class Product implements Parcelable {
 
     private String name;
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    private String uid;
     public String getName() {
         return name;
     }
@@ -23,6 +32,7 @@ public class Product implements Parcelable {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
     public Product() {} //Empty constructor we will need later!
     private Product(Parcel in) {
         name = in.readString();
@@ -33,7 +43,6 @@ public class Product implements Parcelable {
         this.name = name;
         this.quantity = quantity;
     }
-
     @Override
     public String toString() {
         return name+" "+quantity;
