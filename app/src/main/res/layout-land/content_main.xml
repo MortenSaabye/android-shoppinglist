@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/welcome_to_my_shopping_list"
+        android:id="@+id/greeting_text"
         android:layout_below="@+id/toolbar"/>
     <LinearLayout
         android:layout_width="match_parent"

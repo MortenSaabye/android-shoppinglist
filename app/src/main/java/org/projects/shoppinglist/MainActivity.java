@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
     private DatabaseReference mDatabase;
     private String uid;
     private FirebaseAuth mAuth;
+    private TextView greeting;
+
 
     private int spinnerQuantity;
     @Override
@@ -45,14 +48,15 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         uid = getIntent().getStringExtra("userId");
-
-
+        greeting = findViewById(R.id.greeting_text);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
         if(savedInstanceState != null) {
             bag = savedInstanceState.getParcelableArrayList("list");
         } else {
             bag = new ArrayList<>();
         }
         adapter = new ItemAdapter(this, bag);
+        adapter.setUid(this.uid);
         ListView listView = findViewById(R.id.list);
         //setting the adapter on the listview
         listView.setAdapter(adapter);
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
                 Product product = new Product(newItem, newQuantity);
                 product.setUid(mDatabase.push().getKey());
 
-                mDatabase.child(product.getUid()).setValue(product);
+                mDatabase.child("products").child(product.getUid()).setValue(product);
 
                 newItemField.setText("");
                 quantityField.setText("");
@@ -150,10 +154,8 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid()).child("products");
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        //listener for the list of products
+        mDatabase.child("products").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 bag.clear();
@@ -169,6 +171,19 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
 
             }
         });
+        //Listener for name of the user
+        mDatabase.child("name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                greeting.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
     @Override
@@ -183,9 +198,7 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
         {
             //I can can these methods like this, because they are static
             String name = MyPreferenceFragment.getName(this);
-            String message = "Welcome, "+name;
-            Toast toast = Toast.makeText(this,message,Toast.LENGTH_LONG);
-            toast.show();
+            mDatabase.child("name").setValue(name);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -206,6 +219,9 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
                 return true;
             case R.id.action_log_out:
                 this.logOut();
+                return true;
+            case R.id.action_share:
+                this.shareList();
                 return true;
         }
 
@@ -242,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
                 //So this code is called when ever the spinner is clicked
                 spinnerQuantity = position + 1;
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 // TODO you would normally do something here
@@ -256,9 +271,8 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
         ClearAllDialog dialog = new ClearAllDialog();
         dialog.show(getSupportFragmentManager(), "ClearAllDialog");
     }
+
     public static class  ClearAllDialog extends ClearAllDialogFragment {
-
-
         @Override
         protected void negativeClick() {
             //Here we override the method and can now do something
@@ -275,4 +289,19 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
         startActivity(intent);
     }
 
+    private void shareList()
+    {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i<adapter.getCount();i++)
+        {
+            Product p = adapter.getItem(i);
+            result.append(p.toString()).append("\n");
+        }
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, result.toString());
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
+    }
 }

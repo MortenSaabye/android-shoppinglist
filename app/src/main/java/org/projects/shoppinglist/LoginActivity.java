@@ -111,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("Auth", "createUserWithEmail:success");
                             user = mAuth.getCurrentUser();
                             mDatabase.child(user.getUid()).setValue(user.getEmail());
+                            mDatabase.child(user.getUid()).child("name").setValue("New user");
                             Intent intent = new Intent(activity, MainActivity.class);
                             intent.putExtra("userId", user.getUid());
                             startActivity(intent);

@@ -8,7 +8,9 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="email">Email</string>
+    <string name="share">Share</string>
     <string name="password">Password</string>
+    <string name="send_to">Share your shoppinglist</string>
     <string-array name="quantities">
         <item>1</item>
         <item>2</item>

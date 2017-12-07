@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -24,8 +25,13 @@ import java.util.Map;
 
 public class ItemAdapter extends ArrayAdapter<Product> {
     private ArrayList<Product> shoppingList;
-    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("products");
+    private DatabaseReference mDatabase;
 
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    private String uid;
     private Context context;
     private Map<Integer,CheckBox> checkBoxes = new HashMap<>();
     public Map<Integer,CheckBox> getSelectedBoxes() {
@@ -59,8 +65,10 @@ public class ItemAdapter extends ArrayAdapter<Product> {
         TextView itemName = (TextView) convertView.findViewById(R.id.itemName);
         itemName.setText(item.toString());
 
+
         Button deleteBtn = (Button) convertView.findViewById(R.id.deleteBtn);
         final ItemAdapter adapter = this;
+        this.mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(this.uid).child("products");
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
