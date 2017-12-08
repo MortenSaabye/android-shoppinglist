@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,6 @@ import java.util.Map;
 
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
                 }
 
                 for(Product product : itemsToDelete) {
-                    mDatabase.child(product.getUid()).removeValue();
+                    mDatabase.child("products").child(product.getUid()).removeValue();
                 }
                 adapter.clearSelectedItems();
 
@@ -131,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
                                 //the user has hit the UNDO button
                                 bag.clear();
                                 for(Product product : productsBackup){
-                                    mDatabase.child(product.getUid()).setValue(product);
+                                    mDatabase.child("products").child(product.getUid()).setValue(product);
                                 }
 
                                 Snackbar snackbar = Snackbar.make(parent, "Old products restored!", Snackbar.LENGTH_SHORT);
@@ -171,11 +169,14 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
 
             }
         });
+
         //Listener for name of the user
         mDatabase.child("name").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                greeting.setText(dataSnapshot.getValue().toString());
+                if(dataSnapshot.getValue() != null) {
+                    greeting.setText(dataSnapshot.getValue().toString());
+                }
             }
 
             @Override

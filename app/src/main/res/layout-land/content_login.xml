@@ -63,7 +63,5 @@
                 android:onClick="signUpAction"
                 android:text="Sign Up" />
         </android.support.v7.widget.LinearLayoutCompat>
-
-
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
