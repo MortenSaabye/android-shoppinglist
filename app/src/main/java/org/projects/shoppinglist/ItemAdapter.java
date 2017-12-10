@@ -59,7 +59,8 @@ public class ItemAdapter extends ArrayAdapter<Product> {
         final Product item = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(this.getContext()).inflate(R.layout.shopping_item, parent, false);
+            convertView = LayoutInflater.from(this.getContext()).inflate(R.layout.shopping_item,
+                    parent, false);
         }
 
         TextView itemName = (TextView) convertView.findViewById(R.id.itemName);
@@ -68,7 +69,8 @@ public class ItemAdapter extends ArrayAdapter<Product> {
 
         Button deleteBtn = (Button) convertView.findViewById(R.id.deleteBtn);
         final ItemAdapter adapter = this;
-        this.mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(this.uid).child("products");
+        this.mDatabase = FirebaseDatabase.getInstance().getReference().child("users")
+                .child(this.uid).child("products");
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

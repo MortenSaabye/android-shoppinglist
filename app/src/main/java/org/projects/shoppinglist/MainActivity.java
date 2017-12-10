@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements ClearAllDialogFra
             @Override
             public void onClick(View v) {
                 int numItems = adapter.getSelectedBoxes().size();
-                final ArrayList<Product> productsBackup = new ArrayList<>(bag);
+                  final ArrayList<Product> productsBackup = new ArrayList<>(bag);
                 ArrayList<Product> itemsToDelete = new ArrayList<>();
 
                 for(Map.Entry<Integer,CheckBox> box : adapter.getSelectedBoxes().entrySet()) {
